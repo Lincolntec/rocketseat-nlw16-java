@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  db:
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      JDBC URL: jdbc:h2:men://localhost:3308/planner
+      Username: sa
+    ports:
+      - 3308:3308
+    expose:
+      - 3308
+    networks:  
+      - planner-networks  
+  rest-with-spring-boot-planner:
+    image: lincolin7/rest-with-spring-boot-planner
+    restart: always
+    build: ./www/Rocketseat/Nlw16/planner
+    working_dir: /www/Rocketseat/Nlw16/planner
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING.DATASOURCE.URL: jdbc:h2:men://db/planner
+      SPRING.DATASOURCE.Username: sa
+      SPRING.DATASOURCE.PASSWORD:
+    ports:
+      - 8080:8080
+    command: mvn spring-boot:run
+    depends_on: 
+      - db
+    networks:  
+      - planner-networks      
+networks:  
+  planner-networks:
+    driver: bridge
